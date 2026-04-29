@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const Database = require("better-sqlite3");
 const bcrypt = require("bcryptjs");
 
@@ -6,6 +7,7 @@ const DB_PATH = path.join(__dirname, "..", "data", "app.db");
 const DEMO_TOTP_SECRET = "JBSWY3DPEHPK3PXP";
 
 function initDb() {
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
   const db = new Database(DB_PATH);
 
   db.exec(`
