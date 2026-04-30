@@ -21,10 +21,15 @@ type PurchaseOrder = {
 type Phase = "login" | "mfa" | "home";
 
 export default function Home() {
-  const apiBase = useMemo(
-    () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000",
-    []
-  );
+  const apiBase = useMemo(() => {
+    if (typeof window !== "undefined") {
+      const runtimeApi = window.__RUNTIME_CONFIG__?.API_URL;
+      if (runtimeApi) {
+        return runtimeApi;
+      }
+    }
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  }, []);
   const [phase, setPhase] = useState<Phase>("login");
   const [loading, setLoading] = useState(true);
   const [loginError, setLoginError] = useState("");
