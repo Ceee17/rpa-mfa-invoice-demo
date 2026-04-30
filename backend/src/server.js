@@ -14,6 +14,7 @@ const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 const db = initDb();
 const app = express();
+const isProd = process.env.NODE_ENV === "production";
 
 function ensureInvoicePdfFiles() {
   const filesDir = path.join(__dirname, "..", "files");
@@ -69,12 +70,17 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.set("trust proxy", 1);
 app.use(
   session({
     secret: "demo-session-secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, sameSite: "lax" }
+    cookie: {
+      httpOnly: true,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd
+    }
   })
 );
 
